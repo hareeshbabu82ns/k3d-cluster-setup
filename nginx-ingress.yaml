@@ -4,12 +4,14 @@ metadata:
   name: nginx-ingress
   labels:
     app: test
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"  
   namespace: default
 spec:
-  tls:
-    - secretName: kube-uat-tls
-      hosts:
-        - nginx.kube.uat.io
+  # tls:
+  #   - secretName: kube-uat-tls
+  #     hosts:
+  #       - nginx.kube.uat.io
   rules:
   - host: nginx.kube.uat.io
     http:

@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: heimdall-ingress-dev
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/issuer: letsencrypt-staging
+    cert-manager.io/issuer-kind: Issuer
+spec:
+  tls:
+  - hosts:
+    - heimdall.dev.kube.terabits.io
+    secretName: letsencrypt-dev-tls
+  rules:
+  - host: heimdall.dev.kube.terabits.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: heimdall
+            port: 
+              number: 80
+        pathType: ImplementationSpecific

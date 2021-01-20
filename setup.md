@@ -84,11 +84,18 @@ $> k3d create cluster --volume "$(pwd)/data:/data"
 ```sh
 $> k3d create cluster --volume "$(pwd)/manifests:/var/lib/rancher/k3s/server/manifests"
 ```
-
-$> kctl get nodes -o wide
+### Updating Traefik config (default with Rancher)
+* uses config map
+```sh
+$> kubectl get cm traefik -n kube-system -o yaml > tmp/traefik-default-cm.yaml
 ```
-NAME               STATUS   ROLES                       AGE   VERSION        INTERNAL-IP   EXTERNAL-IP   OS-IMAGE   KERNEL-VERSION     CONTAINER-RUNTIME
-k3d-uat-agent-0    Ready    <none>                      98m   v1.20.0+k3s2   172.27.0.3    <none>        Unknown    5.4.0-60-generic   containerd://1.4.3-k3s1
-k3d-uat-agent-1    Ready    <none>                      98m   v1.20.0+k3s2   172.27.0.4    <none>        Unknown    5.4.0-60-generic   containerd://1.4.3-k3s1
-k3d-uat-server-0   Ready    control-plane,etcd,master   98m   v1.20.0+k3s2   172.27.0.2    <none>        Unknown    5.4.0-60-generic   containerd://1.4.3-k3s1
+* update values 
+```toml
+[api]
+  dashboard = true
+```
+```sh
+$> kubectl apply -f tmp/traefik-default-cm.yaml
+# test
+$> kctl -n kube-system port-forward deployment.apps/traefik 8080
 ```

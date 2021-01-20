@@ -1,13 +1,19 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: traefik-dashboard
+  name: traefik-ingress
+  namespace: kube-system
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
 spec:
-  entryPoints:
-    - web
-  routes:
-    - match: Host(`traefik.kube.uat.io`)
-      kind: Rule
-      services:
-        - name: api@internal
-          kind: TraefikService
+  rules:
+  - host: traefik.kube.uat.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: traefik
+            port: 
+              number: 8080
