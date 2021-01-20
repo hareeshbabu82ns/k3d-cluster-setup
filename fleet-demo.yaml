@@ -1,0 +1,8 @@
+apiVersion: fleet.cattle.io/v1alpha1
+kind: GitRepo
+metadata:
+  name: demoapp
+  namespace: fleet-local
+spec:
+  repo: "https://github.com/JackieYou/fleet-demo/single-cluster"
+# kubectl apply -f fleet-demo.yaml

@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: letsencrypt-dev
+  namespace: default
+spec:
+  secretName: letsencrypt-dev-tls
+  # isCA: false
+  dnsNames:
+  # - kube.terabits.io
+  # - '*.dev.kube.terabits.io'
+  - '*.terabits.io'
+  - terabits.io
+  # - rancher.dev.kube.terabits.io
+  # - test.dev.kube.terabits.io
+  issuerRef:
+    name: letsencrypt-staging
+    kind: Issuer

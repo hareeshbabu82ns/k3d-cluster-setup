@@ -1,0 +1,26 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: heimdall-uat-kube-io-tls
+  namespace: default
+spec:
+  secretName: heimdall-uat-kube-io-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - TerabitsIO
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - kube.uat.io
+  - heimdall.kube.uat.io
+  issuerRef:
+    name: kube-uat-ca-self
+    kind: Issuer

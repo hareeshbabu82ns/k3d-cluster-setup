@@ -1,0 +1,8 @@
+apiVersion: cert-manager.io/v1beta1
+kind: Issuer
+metadata:
+  name: uat-ca-issuer
+  namespace: default
+spec:
+  ca:
+    secretName: uat-ca-key-pair

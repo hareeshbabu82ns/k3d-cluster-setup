@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+  annotations:
+   kubernetes.io/ingress.class: traefik
+   ingress.kubernetes.io/auth-type: "basic"
+   ingress.kubernetes.io/auth-secret: "kubernetes-dashboard-ingress-auth"
+spec:
+  rules:
+  - host: dash.kube.uat.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"      
+        backend:
+          service:
+            name: kubernetes-dashboard
+            port: 
+              number: 443
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: dashboard-ingress
+#   # namespace: kubernetes-dashboard
+# spec:
+#   rules:
+#   - host: dash.kube.uat.io
+#     http:
+#       paths:
+#       - pathType: Prefix
+#         path: "/"
+#         backend:
+#           service:
+#             name: kubernetes-dashboard
+#             port: 
+#               number: 443

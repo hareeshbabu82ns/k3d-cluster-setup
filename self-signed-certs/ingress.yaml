@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: heimdall-ingress
+  labels:
+    app: test
+  namespace: default
+spec:
+  tls:
+    - secretName: heimdall-uat-kube-io-tls
+      hosts:
+        - heimdall.kube.uat.io
+  rules:
+  - host: heimdall.kube.uat.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: heimdall
+            port: 
+              number: 80

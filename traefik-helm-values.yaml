@@ -1,0 +1,8 @@
+deployment:
+  replicas: 2
+
+# hostNetwork: true
+
+## enable nodeSelector if need to redirect pod scheduler
+# nodeSelector:
+#   kubernetes.io/hostname: node-lb
