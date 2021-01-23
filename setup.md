@@ -8,7 +8,7 @@
 
 * installing
 ```sh
-$> curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v4.0.0-rc.0 bash
+$> curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v4.0.0 bash
 ```
 
 * Open new Chrome window with web security disables for Rancher (Self Certificates)
@@ -17,9 +17,54 @@ $> open -na Google\ Chrome --args --disable-web-security --user-data-dir=/var/tm
 ```
 ### usage
 
+```yaml k3d-config.yaml
+apiVersion: k3d.io/v1alpha1
+kind: Simple
+name: uat # or dev
+servers: 1
+agents: 2
+kubeAPI:
+  hostIP: "0.0.0.0"
+  hostPort: "6443"
+image: rancher/k3s:v1.20.2-k3s1 # k3s:v1.19.7-k3s1 # k3s:latest
+volumes:
+  - volume: "/home/hareesh/dev/k3d-cluster-setup/cluster-data:/data"
+    nodeFilters:
+      - all
+ports:
+  - port: 80:80
+    nodeFilters:
+      - loadbalancer
+  - port: 0.0.0.0:443:443
+    nodeFilters:
+      - loadbalancer
+# env:
+#   - envVar: bar=baz
+#     nodeFilters:
+#       - all
+# labels:
+#   - label: foo=bar
+#     nodeFilters:
+#       - server[0]
+#       - loadbalancer
+options:
+  k3d:
+    wait: true
+    timeout: "60s"
+    disableLoadbalancer: false
+    disableImageVolume: false
+  k3s:
+    extraServerArgs:
+      - --tls-san=0.0.0.0
+      # - --disable=traefik
+    extraAgentArgs: []
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true
+```
+
 ```sh
-$> k3d cluster create mycluster --agents 2 \
-    --port 80:80@loadbalancer --port 443:443@loadbalancer
+$> k3d cluster create mycluster --config k3d-config.yaml
 
 $> k3d kubeconfig get mycluster > ~/.kube/k3d-mycluster-config.yaml
 $> export KUBECONFIG=~/.kube/k3d-mycluster-config.yaml

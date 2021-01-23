@@ -1,0 +1,49 @@
+apiVersion: k3d.io/v1alpha1
+kind: Simple
+name: uat # or dev
+servers: 1
+agents: 2
+kubeAPI:
+  hostIP: "0.0.0.0"
+  hostPort: "6443"
+image: rancher/k3s:v1.20.2-k3s1 # k3s:v1.19.7-k3s1 # k3s:latest
+volumes:
+  - volume: "/home/hareesh/dev/k3d-cluster-setup/cluster-data:/data"
+    nodeFilters:
+      - all
+  - volume: "/home/hareesh/dev/k3d-cluster-setup/manifests/temp-pv.yaml:/var/lib/rancher/k3s/server/manifests/temp-pv.yaml"
+    nodeFilters:
+      - all
+  - volume: "/home/hareesh/dev/k3d-cluster-setup/manifests/temp-pvc.yaml:/var/lib/rancher/k3s/server/manifests/temp-pvc.yaml"
+    nodeFilters:
+      - all
+ports:
+  - port: 80:80
+    nodeFilters:
+      - loadbalancer
+  - port: 0.0.0.0:443:443
+    nodeFilters:
+      - loadbalancer
+# env:
+#   - envVar: bar=baz
+#     nodeFilters:
+#       - all
+# labels:
+#   - label: foo=bar
+#     nodeFilters:
+#       - server[0]
+#       - loadbalancer
+options:
+  k3d:
+    wait: true
+    timeout: "60s"
+    disableLoadbalancer: false
+    disableImageVolume: false
+  k3s:
+    extraServerArgs:
+      - --tls-san=0.0.0.0
+      # - --disable=traefik
+    extraAgentArgs: []
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true

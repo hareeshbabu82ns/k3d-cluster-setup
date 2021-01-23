@@ -5,7 +5,7 @@ metadata:
   labels:
     app: test
   annotations:
-    ingress.kubernetes.io/ssl-redirect: "true"  
+    ingress.kubernetes.io/ssl-redirect: "false"  
   namespace: default
 spec:
   # tls:
