@@ -10,7 +10,8 @@ echo "----------------------------------------Installing Cluster"
 # --image "docker.io/rancher/k3s:v1.20.2-k3s1" \
 mkdir cluster-data
 chown $(whoami): cluster-data
-k3d cluster create --config k3d-config.yaml
+k3d cluster create --config k3d-config.yaml \
+  --image "docker.io/rancher/k3s:v1.19.7-k3s1"
 # k3d cluster create uat --agents 2 \
 #     --image "docker.io/rancher/k3s:v1.19.7-k3s1" \
 #     --k3s-server-arg "--cluster-init" \

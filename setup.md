@@ -81,6 +81,13 @@ $> k3d cluster stop uat
 $> k3d cluster delete uat
 ```
 
+* get the `rancher` service account __certificate__ and __token__
+```sh
+$> kubectl get -n cattle-system sa
+$> kubectl get -n cattle-system secret rancher-token-xxxxx -o jsonpath='{.data.ca\.crt}' && echo
+$> kubectl get -n cattle-system secret rancher-token-xxxxx -o jsonpath='{.data.token}' | base64 --decode && echo
+```
+
 # helm usage
 
 ```sh

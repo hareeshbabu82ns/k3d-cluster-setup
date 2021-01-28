@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rnginx
+  namespace: default
+  labels:
+    app: rnginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rnginx
+  template:
+    metadata:
+      labels:
+        app: rnginx
+    spec:
+      containers:
+        - name: rnginx
+          image: docker.terabits.io/test/rnginx:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: NODE_ENV
+              value: PROD
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rnginx
+  namespace: default
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    app: rnginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rnginx-ingress
+  annotations:
+  namespace: default
+spec:
+  rules:
+  - host: rnginx.uat.kube.terabits.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: rnginx
+            port: 
+              number: 80

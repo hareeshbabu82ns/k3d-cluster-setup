@@ -6,7 +6,8 @@ agents: 2
 kubeAPI:
   hostIP: "0.0.0.0"
   hostPort: "6443"
-image: rancher/k3s:v1.20.2-k3s1 # k3s:v1.19.7-k3s1 # k3s:latest
+# k3s:v1.20.2-k3s1  # k3s:latest
+# image: docker.io/rancher/k3s:v1.19.7-k3s1
 volumes:
   - volume: "/home/hareesh/dev/k3d-cluster-setup/cluster-data:/data"
     nodeFilters:
