@@ -1,3 +1,6 @@
+dashboard:
+  enabled: true
+  domain: traefik.dev.kube.terabits.io
 persistence:
   config:
     enabled: true

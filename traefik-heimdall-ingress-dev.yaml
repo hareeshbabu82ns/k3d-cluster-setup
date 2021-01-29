@@ -1,0 +1,23 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: heimdall
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`heimdall.dev.kube.terabits.io`)
+    services:
+    - kind: Service
+      name: heimdall
+      port: 80
+      passHostHeader: true
+      responseForwarding:
+        flushInterval: 1ms
+      scheme: http
+      sticky:
+        cookie:
+          httpOnly: true
+          name: cookie
+          secure: true      

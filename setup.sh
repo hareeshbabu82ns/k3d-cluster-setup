@@ -28,6 +28,7 @@ export KUBECONFIG=$HOME/.kube/k3d-uat-config.yaml
 kubectl config use-context k3d-uat
 
 echo "----------------------------------------Installing Helms"
+helm repo add traefik https://helm.traefik.io/traefik
 helm repo add t3n https://storage.googleapis.com/t3n-helm-charts
 helm repo add k8s-at-home https://k8s-at-home.com/charts/
 helm repo add jetstack https://charts.jetstack.io
@@ -36,8 +37,8 @@ helm repo update
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 
-# helm install -f traefik-helm-values.yaml \
-#    traefik traefik/traefik -n kube-system
+helm install -f traefik-helm-values.yaml \
+   traefik traefik/traefik -n kube-system
 helm install nginx t3n/nginx
 helm install -f heimdall-helm-values.yaml \
   heimdall k8s-at-home/heimdall
@@ -70,16 +71,16 @@ kubectl get service traefik -n kube-system -o=jsonpath='{.status.loadBalancer.in
 
 
 echo "----------------------------------------Applying Ingress"
-kubectl apply -f nginx-ingress.yaml
+kubectl apply -f nginx-ingress-dev.yaml
 sleep 2
-kubectl apply -f heimdall-ingress.yaml
+kubectl apply -f heimdall-ingress-dev.yaml
 sleep 2
 # kubectl apply -f k8s-dashboard-ingress.yaml
 # sleep 2
-kubectl apply -f traefik-dash-ingress.yaml
+kubectl apply -f traefik-dash-ingress-dev.yaml
 sleep 2
 
-echo "----------------------------------------Cert Manager & RancherUI"
+echo "----------------------------------------Cert Manager"
 
 kubectl create ns cert-manager
 
@@ -88,14 +89,20 @@ helm install cert-manager jetstack/cert-manager -n cert-manager --set installCRD
 kubectl rollout status deploy/cert-manager -n cert-manager
 sleep 5
 
-echo "----------------------------------------Cert Manager & RancherUI"
+echo "----------------------------------------RancherUI"
 
 kubectl create ns cattle-system
 
 helm install rancher rancher-stable/rancher \
   --version 2.5.5 \
-  -n cattle-system --set hostname=rancher.kube.uat.io
+  -n cattle-system --set hostname=rancher.dev.kube.terabits.io
 kubectl rollout status deploy/rancher -n cattle-system  
+
+echo "----------------------------------------Setting registry pull secrets"
+
+kubectl create secret generic registry-secret \
+    --from-file=.dockerconfigjson=./tmp/docker-auth.json \
+    --type=kubernetes.io/dockerconfigjson
 
 echo "----------------------------------------"
 kubectl get nodes -o wide

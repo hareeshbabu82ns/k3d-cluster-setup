@@ -7,7 +7,7 @@ metadata:
     ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
-  - host: traefik.kube.uat.io
+  - host: traefik.uat.kube.terabits.io
     http:
       paths:
       - pathType: Prefix
