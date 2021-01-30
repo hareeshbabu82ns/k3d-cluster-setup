@@ -43,7 +43,7 @@ options:
   k3s:
     extraServerArgs:
       - --tls-san=0.0.0.0
-      - --disable=traefik
+      # - --disable=traefik
     extraAgentArgs: []
   kubeconfig:
     updateDefaultKubeconfig: true

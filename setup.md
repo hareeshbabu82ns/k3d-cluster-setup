@@ -84,8 +84,9 @@ $> k3d cluster delete uat
 * get the `rancher` service account __certificate__ and __token__
 ```sh
 $> kubectl get -n cattle-system sa
-$> kubectl get -n cattle-system secret rancher-token-xxxxx -o jsonpath='{.data.ca\.crt}' && echo
-$> kubectl get -n cattle-system secret rancher-token-xxxxx -o jsonpath='{.data.token}' | base64 --decode && echo
+$> kubectl get secret/deploy-bot-token-76ffv -o jsonpath='{.data.ca\.crt}' && echo
+$> kubectl get secret/deploy-bot-token-76ffv -o jsonpath='{.data.token}' | base64 --decode && echo
+$> kubectl get secret/deploy-bot-token-76ffv -o yaml | egrep 'ca.crt:|token:'
 ```
 
 # helm usage
@@ -150,4 +151,38 @@ $> kubectl get cm traefik -n kube-system -o yaml > tmp/traefik-default-cm.yaml
 $> kubectl apply -f tmp/traefik-default-cm.yaml
 # test
 $> kctl -n kube-system port-forward deployment.apps/traefik 8080
+```
+
+## Drone CLI
+* find the api token from user profile
+```sh
+$> export DRONE_SERVER=https://drone.terabits.io
+$> export DRONE_TOKEN=XXXXXXXXX
+$> drone info
+```
+
+* validate deployment from local
+```sh
+$> export KUBERNETES_SERVER=https://rancher.dev.kube.terabits.io/k8s/clusters/local
+$> export KUBERNETES_SERVER=https://192.168.86.50:41167
+$> export KUBERNETES_CERT=
+$> export KUBERNETES_TOKEN=
+
+$> docker run --rm \
+    -e PLUGIN_KUBERNETES_SERVER=$KUBERNETES_SERVER \
+    -e PLUGIN_KUBERNETES_CERT=$KUBERNETES_CERT \
+    -e PLUGIN_KUBERNETES_TOKEN=$KUBERNETES_TOKEN \
+    -v $(pwd)/k8s:/data/k8s \
+    sinlead/drone-kubectl apply -f /data/k8s/deployment-react-nginx.yaml
+
+# --insecure-skip-tls-verify
+```
+
+* setup up per repo secrets
+```sh
+$> drone secret add user/repo --name docker_user --data random-data-here
+$> drone secret add user/repo --name docker_pass --data $FROM_ENV_VARIABLE
+$> drone secret add user/repo --name k8s_server --data $KUBERNETES_SERVER
+$> drone secret add user/repo --name k8s_cert --data $KUBERNETES_CERT
+$> drone secret add user/repo --name k8s_token --data $KUBERNETES_TOKEN
 ```

@@ -37,8 +37,8 @@ helm repo update
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 
-helm install -f traefik-helm-values.yaml \
-   traefik traefik/traefik -n kube-system
+# helm install -f traefik-helm-values.yaml \
+#    traefik traefik/traefik -n kube-system
 helm install nginx t3n/nginx
 helm install -f heimdall-helm-values.yaml \
   heimdall k8s-at-home/heimdall
@@ -103,6 +103,10 @@ echo "----------------------------------------Setting registry pull secrets"
 kubectl create secret generic registry-secret \
     --from-file=.dockerconfigjson=./tmp/docker-auth.json \
     --type=kubernetes.io/dockerconfigjson
+
+kubectl apply -f service-account-deployment.yaml
+
+kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "registry-secret"}]}'
 
 echo "----------------------------------------"
 kubectl get nodes -o wide
