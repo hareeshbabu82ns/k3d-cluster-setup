@@ -1,0 +1,13 @@
+---
+- hosts: kubes
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: prereq
+    - role: download
+
+- hosts: kubes
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: k3d/master

@@ -1,0 +1,2 @@
+ssh_user: "{{ vault_ssh_user }}"
+become_pass: "{{ vault_become_pass }}"

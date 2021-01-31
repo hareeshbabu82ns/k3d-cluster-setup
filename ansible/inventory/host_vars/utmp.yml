@@ -1,0 +1,8 @@
+cluster_name: utmp
+k3d_version: v4.0.0
+k3s_version: v1.19.7-k3s1
+cluster_masters: 1
+cluster_nodes: 2
+# port_kube_api: 6443
+port_http: 80
+port_https: 443
