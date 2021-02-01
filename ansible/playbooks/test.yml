@@ -1,0 +1,10 @@
+- hosts: "utmp"
+  become: yes
+  tasks:
+  - name: pip
+    pip:
+        name:
+          - k8s
+          - openshift
+          - requests
+        extra_args: --ignore-installed

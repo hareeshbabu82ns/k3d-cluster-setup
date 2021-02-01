@@ -27,7 +27,7 @@
     method: GET
     return_content: yes
 
-- name: Download k3d binary x64
+- name: Download kubectl binary x64
   get_url:
     url: https://dl.k8s.io/release/{{ kubectl_stable_tag.content }}/bin/linux/amd64/kubectl
     # checksum: sha256:https://github.com/rancher/k3d/releases/download/{{ k3d_version }}/sha256sum-amd64.txt
@@ -37,3 +37,7 @@
     mode: 0755
   when: ansible_facts.architecture == "x86_64"
 
+- name: Install Helm
+  shell:
+    cmd: curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+    warn: false

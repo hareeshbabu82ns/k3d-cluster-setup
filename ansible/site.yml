@@ -4,10 +4,11 @@
   become: yes
   roles:
     - role: prereq
-    - role: download
+    # - role: download
 
 - hosts: kubes
   gather_facts: yes
   become: yes
   roles:
-    - role: k3d/master
+    - {role: k3d/master, tags: 'k3d'}
+    - {role: k3d/helms, tags: 'helms'}

@@ -17,7 +17,7 @@
     owner: root
     group: root
     mode: 0755
-    when:
-      - ( ansible_facts.architecture is search("arm") and
-          ansible_facts.userspace_bits == "64" ) or
-        ansible_facts.architecture is search("aarch64")
+  when:
+    - ( ansible_facts.architecture is search("arm") and
+        ansible_facts.userspace_bits == "64" ) or
+      ansible_facts.architecture is search("aarch64")
