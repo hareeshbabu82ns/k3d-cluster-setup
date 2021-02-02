@@ -8,6 +8,13 @@
     group: root
     mode: 0755
 
+- name: Create directory for templates
+  file:
+    path: ~{{ ansible_user }}/templates
+    state: directory
+    owner: "{{ ansible_user }}"
+    mode: "u=rwx,g=rx,o=" 
+    
 - name: Create directory for manifests
   file:
     path: ~{{ ansible_user }}/manifests

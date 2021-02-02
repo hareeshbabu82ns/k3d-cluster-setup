@@ -28,12 +28,69 @@
     - { name: 'jetstack', repo_url: 'https://charts.jetstack.io' }
     - { name: 'rancher-stable ', repo_url: 'https://releases.rancher.com/server-charts/stable' }
 
-# - name: Deploy Helm - Rancher
-#   community.kubernetes.helm:
-#     name: rancher
-#     chart_ref: rancher-stable/rancher
-#     chart_version: 2.5.5
-#     release_namespace: cattle-system
-#     values:
-#       hostname: rancher.{{ cluster_domain }}
-#     wati: true
+# kubectl create ns cert-manager
+# helm install cert-manager jetstack/cert-manager -n cert-manager --set installCRDs=true
+
+- name: Deploy Helm - Certificate Manager
+  community.kubernetes.helm:
+    name: cert-manager
+    namespace: cert-manager
+    chart_ref: jetstack/cert-manager
+    chart_version: 1.1.0
+    create_namespace: true
+    wait: true
+    # release_state: absent
+    values:
+      installCRDs: true
+  tags:
+    - helm
+    - cert_manager
+    
+- name: Deploy Helm - Rancher
+  community.kubernetes.helm:
+    name: rancher
+    namespace: cattle-system
+    chart_ref: rancher-stable/rancher
+    chart_version: 2.5.5
+    create_namespace: true
+    wait: true
+    # release_state: absent
+    values:
+      hostname: rancher.{{ cluster_domain }}
+  tags:
+    - helm
+    - rancher
+
+# - name: Create Registry Secret Key
+#   command: >-
+#     kubectl create secret docker-registry registry-secret \
+#       --docker-server={{ docker_server }} \
+#       --docker-username={{ docker_user }} \
+#       --docker-password={{ docker_pass }}
+#   tags:
+#     - docker-registry
+
+
+- name: Copy service account deployment files
+  template:
+    src: "{{ item }}"
+    dest: "~{{ ansible_user }}/templates/{{ item }}"
+    owner: "{{ ansible_user }}"
+    mode: "u=rwx,g=rx,o="
+  loop:
+    - 'service-account.yaml'
+  tags:
+    - service-account
+
+- name: Create Service Account
+  command: >-
+    kubectl apply -f ~{{ ansible_user }}/templates/service-account.yaml
+  tags:
+    - service-account
+
+- name: Add Registry Secret Key
+  command: >-
+    kubectl patch serviceaccount default \
+      -p '{"imagePullSecrets": [{"name": "registry-secret"}]}'
+  tags:
+    - docker-registry
