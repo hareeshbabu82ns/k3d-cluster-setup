@@ -61,14 +61,14 @@
     - helm
     - rancher
 
-# - name: Create Registry Secret Key
-#   command: >-
-#     kubectl create secret docker-registry registry-secret \
-#       --docker-server={{ docker_server }} \
-#       --docker-username={{ docker_user }} \
-#       --docker-password={{ docker_pass }}
-#   tags:
-#     - docker-registry
+- name: Create Registry Secret Key
+  command: >-
+    kubectl create secret docker-registry registry-secret \
+      --docker-server={{ docker_server }} \
+      --docker-username={{ docker_user }} \
+      --docker-password={{ docker_pass }}
+  tags:
+    - docker-registry
 
 
 - name: Copy service account deployment files
