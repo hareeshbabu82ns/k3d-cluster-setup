@@ -58,6 +58,8 @@ $> ansible-galaxy collection install community.general
 $> ansible-playbook site.yml
 # just to re-build cluster
 $> ansible-playbook site.yml --tags "k3d"
+# to fetch updated kubeconfig
+$> ansible-playbook site.yml --tags "fetch-config"
 # delete cluster
 $> ansible-playbook reset.yml
 ```

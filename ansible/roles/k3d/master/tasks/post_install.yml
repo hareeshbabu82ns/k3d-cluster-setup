@@ -94,3 +94,31 @@
       -p '{"imagePullSecrets": [{"name": "registry-secret"}]}'
   tags:
     - docker-registry
+
+- name: Fetch Kube Config file
+  fetch:
+    src: ~{{ansible_user}}/.kube/config
+    dest: ~/.kube/{{cluster_name}}.yml
+    flat: yes
+  tags:
+    - fetch-config
+
+- name: Update Kube Config to work from local
+  replace:
+    path: ~/.kube/{{cluster_name}}.yml
+    after: 'server: https://'
+    before: ':'
+    regexp: '^(.+)$'
+    replace: '{{ansible_host}}'
+    # backup: yes
+  delegate_to: localhost
+  become: false
+  tags:
+    - fetch-config
+
+- name: Switch to new context in local
+  command: kubectl config use-context k3d-{{cluster_name}}
+  delegate_to: localhost
+  become: false
+  tags:
+    - fetch-config  

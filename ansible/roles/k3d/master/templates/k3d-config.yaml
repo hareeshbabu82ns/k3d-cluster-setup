@@ -43,6 +43,8 @@ options:
   k3s:
     extraServerArgs:
       - --tls-san=0.0.0.0
+      - --tls-san={{ansible_host}}
+      - --cluster-init
       # - --disable=traefik
     extraAgentArgs: []
   kubeconfig:
